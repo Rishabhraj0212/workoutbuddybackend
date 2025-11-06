@@ -1,16 +1,20 @@
-require("dotenv").config();
-
 const express = require("express");
 const mongoose = require("mongoose");
 const workoutRoutes = require("./routes/workout");
 const userRoutes = require("./routes/user");
 const cors = require("cors");
+const config = require('./config/config');
 
 //express app
 const app = express();
 
 //middleware
-app.use(cors());
+app.use(cors({
+  origin: ['http://localhost:3000', 'http://localhost:3001'], // Allow both ports
+  methods: ['GET', 'POST', 'DELETE', 'UPDATE', 'PUT', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
+}));
 app.use(express.json());
 
 app.use((req, res, next) => {
@@ -25,14 +29,12 @@ app.use("/api/user", userRoutes);
 //     res.json({mssg:"welcome to the app"})
 // })
 
-//check environment and connect to db
-const MONGO_URI = process.env.MONGO_URI;
-const PORT = process.env.PORT || 4000;
+//connect to db
+const MONGO_URI = config.MONGO_URI;
+const PORT = config.PORT;
 
 if (!MONGO_URI) {
-  console.error(
-    "Missing MONGO_URI environment variable. Create a .env file in the backend folder with: MONGO_URI=your_connection_string"
-  );
+  console.error("Missing MONGO_URI in config file");
   process.exit(1);
 }
 
