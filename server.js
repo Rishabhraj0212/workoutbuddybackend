@@ -10,7 +10,12 @@ const cors = require("cors");
 const app = express();
 
 //middleware
-app.use(cors());
+// Configure CORS with specific options
+app.use(cors({
+  origin: ['https://workoutbuddyfrontend.vercel.app', 'http://localhost:3000'],
+  methods: ['GET', 'POST', 'PATCH', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 app.use(express.json());
 
 app.use((req, res, next) => {
